@@ -53,7 +53,7 @@ export default function HomeScreen() {
 
     const transcribeRecording = async (encodedData: unknown) => {
         console.log(encodedData)
-        const response = await axios.post('http://127.0.0.1:5000/api/transcribe', {
+        const response = await axios.post('https://8134-136-24-74-186.ngrok-free.app/api/transcribe', {
             'audio': encodedData
         }, {
             headers: {
