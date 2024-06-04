@@ -10,6 +10,7 @@ import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { ErrorWrapper } from '@/utils/error';
 import { auth } from '@/utils/firebase';
 import { EndExecutionError } from '@/utils/types';
+import { createUser } from '@/actions/user';
 
 export default function HomeScreen() {
     const [email, setEmail] = useState("");
@@ -40,7 +41,7 @@ export default function HomeScreen() {
     const handleSignUp = async () => {
         try {
             await auth.signOut().then().catch();
-            const userCredential = await ErrorWrapper({
+            const userCredentials = await ErrorWrapper({
                 functionToExecute: createUserWithEmailAndPassword,
                 errorHandler: setErrorMessage,
                 parameters: [auth, email, password],
@@ -51,22 +52,9 @@ export default function HomeScreen() {
                         "Your password must be at least 6 characters",
                 },
             });
-            const user = userCredential.user;
-            router.push('/record')
-            // const firebaseUid = user.uid;
-            //   const createdUser = await ErrorWrapper({
-            //     functionToExecute: userCreateUser,
-            //     errorHandler: setErrorMessage,
-            //     parameters: [email, firebaseUid],
-            //   });
 
-            //   await ErrorWrapper({
-            //     functionToExecute: authCreateVerificationLog,
-            //     errorHandler: setErrorMessage,
-            //     parameters: [email, UserVerificationLogType.EMAIL_VERIFICATION],
-            //     customErrors: { default: "Failed To Send Verification Email" },
-            //   });
-            //   return createdUser;
+            await createUser(email, userCredentials.user.uid)
+            router.push('/dashboard')
         } catch (error) {
             if (error instanceof EndExecutionError) {
                 return;

@@ -5,10 +5,10 @@ import { Foundation, MaterialIcons } from '@expo/vector-icons';
 import { auth } from './firebase';
 
 export const FOOTER_TABS = [{
-    label: 'record', logoClass: Foundation, logoName: 'record',
-    url: "/record",
+    label: 'dashboard', logoClass: MaterialIcons, logoName: 'dashboard',
+    url: "/dashboard",
     callback() {
-        router.push('/record')
+        router.push('/dashboard')
     }
 }, {
     label: 'todo list', logoClass: Entypo, logoName: 'list',

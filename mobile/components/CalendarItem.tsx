@@ -8,9 +8,9 @@ export default function CalendarItemComponent({ item }: { item: CalendarItem }) 
         <View style={styles.container}>
             <View>
                 <Text>{item.name}</Text>
-                <Text>{getFormattedDate(item.date)}</Text>
+                <Text>{getFormattedDate(item.date.seconds)}</Text>
             </View>
-            <Text>{item.date.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}</Text>
+            <Text>{new Date(item.date.seconds * 1000).toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}</Text>
         </View>
     );
 }
@@ -20,6 +20,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         padding: 10,
+        borderRadius: 10,
         backgroundColor: 'white',
         alignItems: "center"
     }

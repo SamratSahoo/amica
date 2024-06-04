@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, Button, TouchableOpacity } from 'react-native';
 import { Audio } from 'expo-av';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { blobToBase64 } from '@/utils/file';
 import axios from 'axios';
 import { getBaseUrl } from '@/utils/urls';
@@ -8,32 +8,34 @@ import BaseOverlay from '@/components/Overlays/BaseOverlay';
 import { AntDesign, Fontisto } from '@expo/vector-icons';
 import DashboardFooter from '@/components/DashboardFooter';
 import { FontAwesome5 } from '@expo/vector-icons';
-import TodoItem from '@/components/TodoItem';
+import TodoItemComponent from '@/components/TodoItem';
+import { getTodoItems } from '@/actions/todo-items';
+import { TodoItem } from '@/utils/types';
 export default function ListScreen() {
-    const todoItems = [
-        { name: "do the laundry", complete: false }, { name: "walk the dog", complete: false }, { name: "eat tarantulas", complete: true },
-        { name: "do the laundry", complete: false }, { name: "walk the dog", complete: false }, { name: "eat tarantulas", complete: true },
-        { name: "do the laundry", complete: false }, { name: "walk the dog", complete: false }, { name: "eat tarantulas", complete: true },
-        { name: "do the laundry", complete: false }, { name: "walk the dog", complete: false }, { name: "eat tarantulas", complete: true },
-        { name: "do the laundry", complete: false }, { name: "walk the dog", complete: false }, { name: "eat tarantulas", complete: true },
-        { name: "do the laundry", complete: false }, { name: "walk the dog", complete: false }, { name: "eat tarantulas", complete: true },
-        { name: "do the laundry", complete: false }, { name: "walk the dog", complete: false }, { name: "eat tarantulas", complete: true },
-        { name: "do the laundry", complete: false }, { name: "walk the dog", complete: false }, { name: "eat tarantulas", complete: true },
-        { name: "do the laundry", complete: false }, { name: "walk the dog", complete: false }, { name: "eat tarantulas", complete: true },
-        { name: "do the laundry", complete: false }, { name: "walk the dog", complete: false }, { name: "eat tarantulas", complete: true },
-        { name: "do the laundry", complete: false }, { name: "walk the dog", complete: false }, { name: "eat tarantulas", complete: true },
-    ]
+
+    const [todoItems, setTodoItems] = useState<TodoItem[]>([]);
+    useEffect(() => {
+        async function calendarItemsGetter() {
+            const items = await getTodoItems()
+            setTodoItems([...items])
+        }
+
+        calendarItemsGetter().then().catch()
+
+    }, [])
+
     return (
         <BaseOverlay header={<View style={styles.logo}>
             <View style={styles.logoTextContainer}>
                 <FontAwesome5 name="sad-cry" size={100} color="black" />
+                <Text style={styles.headerTitle}>your to-do list</Text>
             </View>
             <Text></Text>
         </View>}
             body={<View style={styles.listContainer}>
                 {todoItems.map((item, index) => {
                     return (
-                        <TodoItem item={item} key={index}></TodoItem>
+                        <TodoItemComponent item={item} key={index}></TodoItemComponent>
                     )
                 })}
             </View>} footer={<DashboardFooter />}>
@@ -82,5 +84,9 @@ const styles = StyleSheet.create({
     recordButtonText: {
         color: 'white',
         textAlign: 'center'
+    },
+    headerTitle: {
+        fontWeight: "bold",
+        fontSize: 18
     }
 });

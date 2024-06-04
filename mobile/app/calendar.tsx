@@ -2,34 +2,35 @@ import { View, Text, StyleSheet, Button, TouchableOpacity } from 'react-native';
 import BaseOverlay from '@/components/Overlays/BaseOverlay';
 import DashboardFooter from '@/components/DashboardFooter';
 import { Ionicons } from '@expo/vector-icons';
-import CalendarItem from '@/components/CalendarItem';
+import CalendarItemComponent from '@/components/CalendarItem';
+import { useEffect, useState } from 'react';
+import { CalendarItem } from '@/utils/types';
+import { getCalendarItems } from '@/actions/calendar-items';
 export default function CalendarScreen() {
-    const calendarItems = [
-        { name: "do the laundry", date: new Date() }, { name: "walk the dog", date: new Date() }, { name: "eat tarantulas", date: new Date() },
-        { name: "do the laundry", date: new Date() }, { name: "walk the dog", date: new Date() }, { name: "eat tarantulas", date: new Date() },
-        { name: "do the laundry", date: new Date() }, { name: "walk the dog", date: new Date() }, { name: "eat tarantulas", date: new Date() },
-        { name: "do the laundry", date: new Date() }, { name: "walk the dog", date: new Date() }, { name: "eat tarantulas", date: new Date() },
-        { name: "do the laundry", date: new Date() }, { name: "walk the dog", date: new Date() }, { name: "eat tarantulas", date: new Date() },
-        { name: "do the laundry", date: new Date() }, { name: "walk the dog", date: new Date() }, { name: "eat tarantulas", date: new Date() },
-        { name: "do the laundry", date: new Date() }, { name: "walk the dog", date: new Date() }, { name: "eat tarantulas", date: new Date() },
-        { name: "do the laundry", date: new Date() }, { name: "walk the dog", date: new Date() }, { name: "eat tarantulas", date: new Date() },
-        { name: "do the laundry", date: new Date() }, { name: "walk the dog", date: new Date() }, { name: "eat tarantulas", date: new Date() },
-        { name: "do the laundry", date: new Date() }, { name: "walk the dog", date: new Date() }, { name: "eat tarantulas", date: new Date() },
-        { name: "do the laundry", date: new Date() }, { name: "walk the dog", date: new Date() }, { name: "eat tarantulas", date: new Date() },
-        { name: "do the laundry", date: new Date() }, { name: "walk the dog", date: new Date() }, { name: "eat tarantulas", date: new Date() },
-        { name: "do the laundry", date: new Date() }, { name: "walk the dog", date: new Date() }, { name: "eat tarantulas", date: new Date() },
-    ]
+
+    const [calendarItems, setCalendarItems] = useState<CalendarItem[]>([]);
+
+    useEffect(() => {
+        async function calendarItemsGetter() {
+            const items = await getCalendarItems()
+            setCalendarItems([...items])
+        }
+
+        calendarItemsGetter().then().catch()
+
+    }, [])
     return (
         <BaseOverlay header={<View style={styles.logo}>
             <View style={styles.logoTextContainer}>
                 <Ionicons name="sad" size={100} color="black" />
+                <Text style={styles.headerTitle}>your calendar</Text>
             </View>
             <Text></Text>
         </View>}
             body={<View style={styles.listContainer}>
                 {calendarItems.map((item, index) => {
                     return (
-                        <CalendarItem item={item} key={index}></CalendarItem>
+                        <CalendarItemComponent item={item} key={index}></CalendarItemComponent>
                     )
                 })}
             </View>} footer={<DashboardFooter />}>
@@ -78,5 +79,10 @@ const styles = StyleSheet.create({
     recordButtonText: {
         color: 'white',
         textAlign: 'center'
+    },
+    headerTitle: {
+        fontWeight: "bold",
+        fontSize: 18
     }
+
 });

@@ -1,14 +1,24 @@
-import React from "react";
-import { Text, StyleSheet, View } from 'react-native';
+import React, { useEffect, useState } from "react";
+import { Text, StyleSheet, View, TouchableOpacity } from 'react-native';
 import { TodoItem } from "@/utils/types";
 import Checkbox from 'expo-checkbox';
+import { invertTodoItemCompletion } from "@/actions/todo-items";
 
 export default function TodoItemComponent({ item }: { item: TodoItem }) {
+    const [itemStatus, setItemsStatus] = useState<boolean>(false);
+
+    useEffect(() => {
+        setItemsStatus(item.complete)
+    }, [])
     return (
-        <View style={styles.container}>
+        <TouchableOpacity style={styles.container} onPress={async () => {
+            await invertTodoItemCompletion(item.id ?? "")
+            setItemsStatus(!itemStatus)
+        }}>
             <Text>{item.name}</Text>
-            <Checkbox value={item.complete} />
-        </View>
+            <Checkbox value={itemStatus}
+            />
+        </TouchableOpacity>
     );
 }
 
@@ -17,6 +27,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         padding: 10,
-        backgroundColor: 'white'
+        borderRadius: 10,
+        backgroundColor: 'white',
     }
 });

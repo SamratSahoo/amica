@@ -34,7 +34,7 @@ export default function HomeScreen() {
                         "Invalid email/password combination",
                 },
             });
-            router.push('/record')
+            router.push('/dashboard')
             // const user = await ErrorWrapper({
             //   functionToExecute: userGetUserInfo,
             //   errorHandler: setErrorMessage,

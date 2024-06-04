@@ -1,7 +1,9 @@
 import { getApps, getApp, initializeApp } from "firebase/app";
 import { getStorage } from "firebase/storage";
-import { getAuth, getReactNativePersistence, initializeAuth } from "firebase/auth";
+import { getReactNativePersistence, initializeAuth } from "firebase/auth";
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
+import { getFirestore } from "firebase/firestore";
+
 
 const FIREBASE_API_KEY = "AIzaSyDcWxvdySkScbdc75OVwBOI3jH_K9ezJWs";
 const FIREBASE_AUTH_DOMAIN = "mobile-assistant-56277.firebaseapp.com";
@@ -42,6 +44,6 @@ if (getApps().length === 0) {
 const auth = initializeAuth(app, {
     persistence: getReactNativePersistence(ReactNativeAsyncStorage)
 });
-const storage = getStorage(app);
+const db = getFirestore(app);
 
-export { auth, storage };
+export { auth, db };
