@@ -32,11 +32,10 @@ def hello_world():
 @app.route("/api/transcribe", methods=["POST"])
 def transcribe_text():
     body = request.get_json()
-    print(body)
     webm_data = base64.b64decode(body["audio"].replace("data:audio/x-m4a;base64,", ""))
     webm_file_path = "output.mp4"
 
-    with open(webm_file_path, "wb") as webm_file:
+    with open(webm_file_path, "wb+") as webm_file:
         webm_file.write(webm_data)
 
     audio = AudioSegment.from_file(webm_file_path, format="mp4")
