@@ -15,9 +15,17 @@ export default function TodoItemComponent({ item }: { item: TodoItem }) {
             await invertTodoItemCompletion(item.id ?? "")
             setItemsStatus(!itemStatus)
         }}>
-            <Text>{item.task}</Text>
-            <Checkbox value={itemStatus}
-            />
+            <View style={styles.taskContainer}>
+                <Text>{item.task}</Text>
+            </View>
+
+            <View style={styles.checkCategoryContainer}>
+                <View style={styles.categoryContainer}>
+                    <Text style={styles.categoryText}>{item.category}</Text>
+                </View>
+                <Checkbox value={itemStatus}
+                />
+            </View>
         </TouchableOpacity>
     );
 }
@@ -29,5 +37,21 @@ const styles = StyleSheet.create({
         padding: 10,
         borderRadius: 10,
         backgroundColor: 'white',
+    },
+    checkCategoryContainer: {
+        flexDirection: 'row',
+        gap: 10,
+        alignItems: 'center'
+    },
+    categoryContainer: {
+        padding: 5,
+        backgroundColor: 'black',
+        borderRadius: 10
+    },
+    categoryText: {
+        color: 'white'
+    },
+    taskContainer: {
+        width: 250
     }
 });

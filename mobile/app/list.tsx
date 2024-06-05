@@ -15,12 +15,12 @@ export default function ListScreen() {
 
     const [todoItems, setTodoItems] = useState<TodoItem[]>([]);
     useEffect(() => {
-        async function calendarItemsGetter() {
+        async function todoItemsGetter() {
             const items = await getTodoItems()
             setTodoItems([...items])
         }
 
-        calendarItemsGetter().then().catch()
+        todoItemsGetter().then().catch()
 
     }, [])
 

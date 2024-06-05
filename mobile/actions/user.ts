@@ -28,11 +28,11 @@ export const getUser = async () => {
 }
 
 export async function appendCategoryToUser(newCategory: string) {
-    const user = await getUser()
-    if (!user || !user.id) {
+    if (!auth.currentUser?.uid) {
         return;
     }
-    await setDoc(doc(db, "user-data", user.id), { ...user, categories: [...user?.categories, newCategory] })
+    const user = await getUser()
+    await setDoc(doc(db, "user-data", auth.currentUser?.uid), { ...user, categories: [...user?.categories, newCategory] })
 
 }
 

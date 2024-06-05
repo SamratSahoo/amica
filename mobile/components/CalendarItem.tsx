@@ -1,16 +1,15 @@
 import React from "react";
 import { Text, StyleSheet, View } from 'react-native';
 import { CalendarItem } from "@/utils/types";
-import { getFormattedDate } from "@/utils/string";
 
 export default function CalendarItemComponent({ item }: { item: CalendarItem }) {
     return (
         <View style={styles.container}>
             <View>
-                <Text>{item.name}</Text>
-                <Text>{getFormattedDate(item.date.seconds)}</Text>
+                <Text>{item.event}</Text>
+                <Text>{`${item.month}/${item.day}/${item.year}`}</Text>
             </View>
-            <Text>{new Date(item.date.seconds * 1000).toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}</Text>
+            <Text>{item.time}</Text>
         </View>
     );
 }

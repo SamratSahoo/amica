@@ -5,6 +5,7 @@ from firebase_admin import firestore
 from openai import OpenAI
 import json
 import io
+from datetime import datetime
 
 cred = credentials.Certificate("./backend/serviceAccount.json")
 firebase_admin.initialize_app(cred)
@@ -117,18 +118,18 @@ def add_file():
     cats = user_ref["categories"]
 
     file_data = {
-      'audio_recording_location': location,
-      'audio_recording_timestamp': timestamp,
-      'audio_transcription': text
+        "audio_recording_location": location,
+        "audio_recording_timestamp": timestamp,
+        "audio_transcription": text,
     }
 
     # Ready the file data for upload to OpenAI as a JSON stream
 
     file_streams = [io.BytesIO(json.dumps(file_data).encode("utf-8"))]
 
-    with open("test.json", "w") as json_file:
+    with open("test.json", "w+") as json_file:
         # Step 4: Use json.dump to write the dictionary to the file
-        json.dump(data, json_file, indent=4)
+        json.dump(file_data, json_file, indent=4)
 
     file_paths = ["./test.json"]
     file_streams = [open(path, "rb") for path in file_paths]
@@ -142,11 +143,16 @@ def add_file():
     print(file_batch)
 
     tasks = create_tasks(text, cats)
+    events = create_events(text)
 
     for task in tasks["tasks"]:
         task["user"] = uid
         task["complete"] = False
         update_time, task_ref = db.collection("todo-items").add(task)
+
+    for event in events["events"]:
+        event["user"] = uid
+        db.collection("calendar-items").add(event)
 
     return {"message": "succesfully added file"}
 
@@ -164,7 +170,7 @@ def add_user():
     )
 
     assistant_general = client.beta.assistants.create(
-        instructions="You are an all knowing personal assistant (very similar to tony stark's jarvis). You have access to all the conversations the user has with other people and some other data. Use that data to be as useful as possible to the user.",
+        instructions="You are an all knowing personal assistant (very similar to tony stark's jarvis). You have access to all the conversations the user has with other people in form of json files that contain metadata i.e. the time and place the conversation took place at and the actual transcription. Use that data to be as useful as possible to the user.",
         name=uid,
         tools=[{"type": "file_search"}],
         model="gpt-4-turbo",
@@ -190,12 +196,17 @@ def add_user():
 
 def create_tasks(text: str, categories):
     completion = client.chat.completions.create(
-      model="gpt-4o",
-      response_format={ "type": "json_object" },
-      messages=[
-        {"role": "system", "content": f"Your job is to take text which are real conversations from users and make tasks out of them that the user needs to complete (only use the conversation). Make sure to return no tasks if there are none. All your responses should be JSON only return the list of tasks in the field 'tasks'. Also categorize tasks into one of the following categories : " + ', '.join(categories) + """. Format data like so : {"tasks" : [{"task" : "the task here", "category" : "category here"}]}"""},
-        {"role": "user", "content": text}
-      ]
+        model="gpt-4o",
+        response_format={"type": "json_object"},
+        messages=[
+            {
+                "role": "system",
+                "content": f"Your job is to take text which are real conversations from users and make tasks out of them that the user needs to complete (only use the conversation). Make sure to return no tasks if there are none. All your responses should be JSON only return the list of tasks in the field 'tasks'. Also categorize tasks into one of the following categories : "
+                + ", ".join(categories)
+                + """. Format data like so : {"tasks" : [{"task" : "the task here", "category" : "category here"}]}""",
+            },
+            {"role": "user", "content": text},
+        ],
     )
 
     print(completion.choices[0].message.content)
@@ -208,7 +219,50 @@ def create_tasks(text: str, categories):
     # print(completion)
 
 
+def convert_to_int(value):
+    try:
+        return int(value)
+    except:
+        return value
+
+
+def create_events(text: str):
+    current_time = datetime.now()
+    completion = client.chat.completions.create(
+        model="gpt-4o",
+        response_format={"type": "json_object"},
+        messages=[
+            {
+                "role": "system",
+                "content": f"Your job is to take text which are real conversations from users and make a list of events all of which have an associated date and time with them (only use the conversation). Make sure to return no events if there are none. All your responses should be JSON only return the list of events in the field 'events'. All times in the format HH:MM AM/PM. If no year, day or month is specified, return null for the respective fields. If the user mentions a day relative to the current day, calculate the day and return it (today is {current_time.strftime('%m/%d/%Y')}). Make sure the year, month, and date are numbers"
+                + """Format data like so : {"events" : [{"event" : "the event here", "month" : "the month here", "day": "the day here", "year": "the year here", "time": "the time here"}]}""",
+            },
+            {"role": "user", "content": text},
+        ],
+    )
+
+    print(completion.choices[0].message.content)
+
+    # Parse the JSON content from the completion message
+    events_json = json.loads(completion.choices[0].message.content)
+    for i, _ in enumerate(events_json["events"]):
+        events_json["events"][i]["month"] = convert_to_int(
+            events_json["events"][i]["month"]
+        )
+        events_json["events"][i]["year"] = convert_to_int(
+            events_json["events"][i]["year"]
+        )
+        events_json["events"][i]["day"] = convert_to_int(
+            events_json["events"][i]["day"]
+        )
+
+    print(events_json)
+    return events_json
+
+
 if __name__ == "__main__":
     app.run(debug=True)
-
+    # create_events(
+    #     """I have a hackathon in san francisco i need to go to this sunday at 18:30"""
+    # )
     # create_tasks("""""", ['House', 'Other'])

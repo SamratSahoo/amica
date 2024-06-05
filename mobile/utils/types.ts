@@ -12,14 +12,13 @@ export interface TodoItem {
     category: string;
 }
 
-export interface FirestoreDate {
-    seconds: number;
-    nanoseconds: number
-}
 export interface CalendarItem {
     id?: string;
-    name: string;
-    date: FirestoreDate
+    event: string;
+    year: number;
+    day: number;
+    month: number;
+    time: string
 }
 
 export interface User {

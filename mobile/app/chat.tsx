@@ -32,7 +32,7 @@ export default function ChatScreen() {
                 <View style={styles.messageContainer}>
                     {allMessages.map((message, index) => {
                         return (
-                            <View style={!message.isUser ? styles.botMessage : styles.userMessage}>
+                            <View style={!message.isUser ? styles.botMessage : styles.userMessage} key={index}>
                                 <Text style={!message.isUser ? styles.whiteText : styles.blackText}>{message.message}</Text>
                             </View>
                         )

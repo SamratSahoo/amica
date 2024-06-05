@@ -16,6 +16,7 @@ export default function AudioScreen() {
     const [startTime, setStartTime] = useState<Date | null>(null);
     async function getUserData() {
         const user = await getUser() as User;
+        console.log(user)
         setCurrentUser(user);
     }
 
