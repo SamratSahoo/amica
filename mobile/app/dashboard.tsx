@@ -8,24 +8,33 @@ import BaseOverlay from '@/components/Overlays/BaseOverlay';
 import { AntDesign, Fontisto } from '@expo/vector-icons';
 import DashboardFooter from '@/components/DashboardFooter';
 import { User } from '@/utils/types';
-import { appendCategoryToUser, getUser } from '@/actions/user';
+import { appendCategoryToUser, getUser, userAddRecording } from '@/actions/user';
+import * as Location from 'expo-location';
 
 export default function AudioScreen() {
     const [permissionResponse, requestPermission] = Audio.usePermissions();
     const [recording, setRecording] = useState<Audio.Recording | undefined>(undefined);
     const [currentUser, setCurrentUser] = useState<User | null>(null);
     const [category, setCategory] = useState<string>("")
+    const [startTime, setStartTime] = useState<Date | null>(null);
     async function getUserData() {
-        const user = await getUser();
+        const user = await getUser() as User;
         setCurrentUser(user);
     }
 
     useEffect(() => {
-
         getUserData().then().catch()
     }, [])
 
     const startRecording = async () => {
+
+        // let { status } = await Location.requestForegroundPermissionsAsync();
+        // if (status !== 'granted') {
+        //     return;
+        // }
+
+        // let location = await Location.getCurrentPositionAsync({});
+
         if (permissionResponse?.status !== 'granted') {
             await requestPermission();
         }
@@ -39,6 +48,7 @@ export default function AudioScreen() {
 
         const { recording } = await Audio.Recording.createAsync(Audio.RecordingOptionsPresets.HIGH_QUALITY)
         setRecording(recording);
+        setStartTime(new Date())
 
     }
 
@@ -64,18 +74,9 @@ export default function AudioScreen() {
         });
 
         setRecording(undefined);
-        await transcribeRecording(await blobToBase64(blob));
+        await userAddRecording(await blobToBase64(blob) as string, startTime as Date, "Craft AI Hackathon");
     }
 
-    const transcribeRecording = async (encodedData: unknown) => {
-        const response = await axios.post(getBaseUrl() + '/api/transcribe', {
-            'audio': encodedData
-        }, {
-            headers: {
-                'Access-Control-Allow-Origin': '*',
-            }
-        })
-    }
 
     const categoryAddHandler = async () => {
         await appendCategoryToUser(category);

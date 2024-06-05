@@ -1,12 +1,17 @@
 import { auth, db } from "@/utils/firebase"
 import { User } from "@/utils/types";
-import { addDoc, collection, doc, getDocs, query, setDoc, where } from "firebase/firestore";
+import { getBaseUrl } from "@/utils/urls";
+import axios from "axios";
+import { addDoc, collection, doc, getDoc, getDocs, query, setDoc, where } from "firebase/firestore";
 
 export const createUser = async (email: string, firebaseUid: string) => {
-    return await addDoc(collection(db, "user-data"), {
-        email,
-        firebaseUid,
-        categories: ['other']
+    const response = await axios.post(getBaseUrl() + '/register_user', {
+        uid: firebaseUid,
+        email
+    }, {
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+        }
     })
 }
 
@@ -16,11 +21,9 @@ export const getUser = async () => {
     }
 
 
-    const q = query(collection(db, "user-data"), where("firebaseUid", "==", auth.currentUser?.uid))
-    const snapshot = await getDocs(q);
-    const users: User[] = []
-    snapshot.forEach((doc) => { users.push({ id: doc.id, ...doc.data() } as any) })
-    return users.length ? users[0] : null;
+    const docRef = doc(db, "user-data", auth.currentUser?.uid)
+    const docSnap = await getDoc(docRef);
+    return docSnap.data();
 
 }
 
@@ -32,3 +35,34 @@ export async function appendCategoryToUser(newCategory: string) {
     await setDoc(doc(db, "user-data", user.id), { ...user, categories: [...user?.categories, newCategory] })
 
 }
+
+export const userAddRecording = async (encodedData: string, timestamp: Date, location: string) => {
+    const response = await axios.post(getBaseUrl() + '/add_file', {
+        'audio': encodedData,
+        uid: auth.currentUser?.uid,
+        timestamp,
+        location
+
+    }, {
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+        }
+    })
+}
+
+
+export const userSendChat = async (message: string) => {
+    const response = await axios.post(getBaseUrl() + '/chat', {
+        'uid': auth.currentUser?.uid,
+        message
+
+    }, {
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+        }
+    })
+
+    return response.data;
+}
+
+

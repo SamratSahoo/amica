@@ -1,3 +1,4 @@
+import { userSendChat } from "@/actions/user";
 import DashboardFooter from "@/components/DashboardFooter";
 import BaseOverlay from "@/components/Overlays/BaseOverlay";
 import { AntDesign } from "@expo/vector-icons";
@@ -11,11 +12,14 @@ interface BotMessage {
 
 export default function ChatScreen() {
     const [chatMessage, setChatMessage] = useState<string>("")
-    const [allMessages, setAllMessages] = useState<BotMessage[]>([{ isUser: false, message: 'how can i help u today' }, { isUser: true, message: 'how can i help u today' }])
+    const [allMessages, setAllMessages] = useState<BotMessage[]>([{ isUser: false, message: 'how can i help u today' }])
 
-    const submitHandler = () => {
+    const submitHandler = async () => {
+        const oldMessages = allMessages;
         setAllMessages([...allMessages, { isUser: true, message: chatMessage }])
         setChatMessage("")
+        const resp = await userSendChat(chatMessage)
+        setAllMessages([...oldMessages, { isUser: true, message: chatMessage }, { isUser: false, message: resp.message }])
     }
     return (
         <BaseOverlay header={<View style={styles.logo}>
