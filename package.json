@@ -1,0 +1,7 @@
+{
+  "scripts": {
+    "dev:mobile": "cd mobile && npx expo start --tunnel",
+    "dev:backend": "./backend.sh",
+    "stop:backend": "killall ngrok && kill $(lsof -t -i:5000)"
+  }
+}
