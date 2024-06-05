@@ -74,7 +74,7 @@ export default function AudioScreen() {
         });
 
         setRecording(undefined);
-        await userAddRecording(await blobToBase64(blob) as string, startTime as Date, "Craft AI Hackathon");
+        await userAddRecording(await blobToBase64(blob) as string, startTime as Date);
     }
 
 

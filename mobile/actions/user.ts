@@ -36,12 +36,11 @@ export async function appendCategoryToUser(newCategory: string) {
 
 }
 
-export const userAddRecording = async (encodedData: string, timestamp: Date, location: string) => {
+export const userAddRecording = async (encodedData: string, timestamp: Date) => {
     const response = await axios.post(getBaseUrl() + '/add_file', {
         'audio': encodedData,
         uid: auth.currentUser?.uid,
         timestamp,
-        location
 
     }, {
         headers: {
