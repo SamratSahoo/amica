@@ -2,14 +2,11 @@ import { View, Text, StyleSheet, Button, TouchableOpacity, TextInput } from 'rea
 import { Audio } from 'expo-av';
 import { useEffect, useState } from 'react';
 import { blobToBase64 } from '@/utils/file';
-import axios from 'axios';
-import { getBaseUrl } from '@/utils/urls';
 import BaseOverlay from '@/components/Overlays/BaseOverlay';
 import { AntDesign, Fontisto } from '@expo/vector-icons';
 import DashboardFooter from '@/components/DashboardFooter';
 import { User } from '@/utils/types';
 import { appendCategoryToUser, getUser, userAddRecording } from '@/actions/user';
-import * as Location from 'expo-location';
 
 export default function AudioScreen() {
     const [permissionResponse, requestPermission] = Audio.usePermissions();
