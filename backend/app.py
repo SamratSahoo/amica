@@ -114,9 +114,9 @@ def add_file():
     cats = user_ref['categories']
 
     file_data = {
-      'location': location,
-      'timestamp': timestamp,
-      'data': text
+      'audio_recording_location': location,
+      'audio_recording_timestamp': timestamp,
+      'audio_transcription': text
     }
 
     # Ready the file data for upload to OpenAI as a JSON stream
@@ -182,7 +182,7 @@ def create_tasks(text : str, categories):
       model="gpt-4o",
       response_format={ "type": "json_object" },
       messages=[
-        {"role": "system", "content": f"Your job is to take text which are real conversations from users and make tasks out of them that the user might need to complete. Make sure to return no tasks if there are none. All your responses should be JSON only return the list of tasks in the field 'tasks'. Also categorize tasks into one of the following categories : " + ', '.join(categories) + """. Format data like so : {"tasks" : [{"task" : "the task here", "category" : "category here"}]}"""},
+        {"role": "system", "content": f"Your job is to take text which are real conversations from users and make tasks out of them that the user needs to complete (only use the conversation). Make sure to return no tasks if there are none. All your responses should be JSON only return the list of tasks in the field 'tasks'. Also categorize tasks into one of the following categories : " + ', '.join(categories) + """. Format data like so : {"tasks" : [{"task" : "the task here", "category" : "category here"}]}"""},
         {"role": "user", "content": text}
       ]
     )
