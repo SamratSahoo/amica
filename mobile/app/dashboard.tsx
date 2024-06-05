@@ -7,6 +7,7 @@ import { AntDesign, Fontisto } from '@expo/vector-icons';
 import DashboardFooter from '@/components/DashboardFooter';
 import { User } from '@/utils/types';
 import { appendCategoryToUser, getUser, userAddRecording } from '@/actions/user';
+import { LoadingModal } from "react-native-loading-modal";
 
 export default function AudioScreen() {
     const [permissionResponse, requestPermission] = Audio.usePermissions();
@@ -14,6 +15,7 @@ export default function AudioScreen() {
     const [currentUser, setCurrentUser] = useState<User | null>(null);
     const [category, setCategory] = useState<string>("")
     const [startTime, setStartTime] = useState<Date | null>(null);
+    const [isProcessing, setIsProcessing] = useState<boolean>(false);
     async function getUserData() {
         const user = await getUser() as User;
         console.log(user)
@@ -25,13 +27,6 @@ export default function AudioScreen() {
     }, [])
 
     const startRecording = async () => {
-
-        // let { status } = await Location.requestForegroundPermissionsAsync();
-        // if (status !== 'granted') {
-        //     return;
-        // }
-
-        // let location = await Location.getCurrentPositionAsync({});
 
         if (permissionResponse?.status !== 'granted') {
             await requestPermission();
@@ -72,7 +67,9 @@ export default function AudioScreen() {
         });
 
         setRecording(undefined);
+        setIsProcessing(true);
         await userAddRecording(await blobToBase64(blob) as string, startTime as Date);
+        setIsProcessing(false);
     }
 
 
@@ -116,7 +113,7 @@ export default function AudioScreen() {
                     ></TextInput>
                     <TouchableOpacity style={styles.addButton}><Text style={styles.addText} onPress={async () => await categoryAddHandler()}>add</Text></TouchableOpacity>
                 </View>
-
+                <LoadingModal modalVisible={isProcessing} task="processing data" modalStyle={modalStyle.loadModal} />
             </View>
 
             } footer={<DashboardFooter />}>
@@ -124,6 +121,9 @@ export default function AudioScreen() {
     );
 }
 
+const modalStyle = StyleSheet.create({
+    loadModal: { padding: 10, width: '60%', height: '15%' }
+})
 const styles = StyleSheet.create({
     container: {
         flex: 1,

@@ -2,8 +2,9 @@ import { userSendChat } from "@/actions/user";
 import DashboardFooter from "@/components/DashboardFooter";
 import BaseOverlay from "@/components/Overlays/BaseOverlay";
 import { AntDesign } from "@expo/vector-icons";
-import React, { useState } from "react";
-import { Text, View, StyleSheet, TextInput, TouchableOpacity } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { Text, View, StyleSheet, TextInput, TouchableOpacity, Animated } from "react-native";
+import Entypo from '@expo/vector-icons/Entypo';
 
 interface BotMessage {
     isUser: boolean;
@@ -11,18 +12,42 @@ interface BotMessage {
 }
 
 export default function ChatScreen() {
+    const fadeAnim = useRef(new Animated.Value(0)).current;
+
+    useEffect(() => {
+        const fadeInOut = () => {
+            Animated.sequence([
+                Animated.timing(fadeAnim, {
+                    toValue: 1,
+                    duration: 1000,
+                    useNativeDriver: true,
+                }),
+                Animated.timing(fadeAnim, {
+                    toValue: 0,
+                    duration: 1000, // Adjust the duration as needed
+                    useNativeDriver: true,
+                }),
+            ]).start(() => {
+                fadeInOut();
+            });
+        };
+
+        fadeInOut();
+    }, [fadeAnim]);
     const [chatMessage, setChatMessage] = useState<string>("")
     const [allMessages, setAllMessages] = useState<BotMessage[]>([{ isUser: false, message: 'how can i help u today' }])
-
+    const [botTyping, setBotTyping] = useState<boolean>(false);
     const submitHandler = async () => {
+        setBotTyping(true)
         const oldMessages = allMessages;
         setAllMessages([...allMessages, { isUser: true, message: chatMessage }])
         setChatMessage("")
         const resp = await userSendChat(chatMessage)
+        setBotTyping(false)
         setAllMessages([...oldMessages, { isUser: true, message: chatMessage }, { isUser: false, message: resp.message }])
     }
     return (
-        <BaseOverlay header={<View style={styles.logo}>
+        <BaseOverlay scrollBodyToBottom={true} header={<View style={styles.logo}>
             <View style={styles.logoTextContainer}>
                 <AntDesign name="meho" size={100} />
                 <Text style={styles.headerTitle}>ask meh anything .-.</Text>
@@ -42,6 +67,14 @@ export default function ChatScreen() {
             </View>} footer={
 
                 <View style={styles.footerContainer}>
+                    {botTyping && <Animated.View style={[
+                        {
+                            opacity: fadeAnim,
+                        },
+                    ]}
+                    >
+                        <Entypo name="typing" size={24} color="black" />
+                    </Animated.View >}
                     <View style={styles.submitContainer}>
                         <TextInput
                             placeholder="message"

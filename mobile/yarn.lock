@@ -8080,6 +8080,11 @@ react-native-helmet-async@2.0.4:
     react-fast-compare "^3.2.2"
     shallowequal "^1.1.0"
 
+react-native-loading-modal@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/react-native-loading-modal/-/react-native-loading-modal-1.1.0.tgz#af73af560749ff99f77d5b79cd3733a84ea6f7a9"
+  integrity sha512-s/PXYnWsFiq3gTKo3Kzf4shWGwHU/hmB0RKkOjwF74121DL7Ah/rcYMaHvPFxnrxAPG12KRE2G6PTmFBAdhZ5g==
+
 react-native-reanimated@~3.10.1:
   version "3.10.1"
   resolved "https://registry.yarnpkg.com/react-native-reanimated/-/react-native-reanimated-3.10.1.tgz#3c37d1100bbba0065df39c96aab0c1ff1b50c0fa"

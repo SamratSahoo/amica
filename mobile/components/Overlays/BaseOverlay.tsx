@@ -1,4 +1,4 @@
-import React, { ReactElement } from "react";
+import React, { ReactElement, RefObject, useRef } from "react";
 import {
     StyleSheet,
     View,
@@ -17,13 +17,17 @@ interface BaseOverlayProps {
     body: ReactElement;
     footer?: ReactElement;
     fixedBody?: boolean;
+    scrollBodyToBottom?: boolean;
 }
 export default function BaseOverlay({
     header,
     body,
     footer,
     fixedBody,
+    scrollBodyToBottom
 }: BaseOverlayProps) {
+    const scrollViewRef = useRef<ScrollView>();
+
     return (
         <TouchableWithoutFeedback
             onPress={() => {
@@ -38,7 +42,8 @@ export default function BaseOverlay({
                             {fixedBody ? (
                                 <View>{body}</View>
                             ) : (
-                                <ScrollView>
+                                <ScrollView ref={scrollViewRef as RefObject<ScrollView>}
+                                    onContentSizeChange={scrollBodyToBottom ? () => scrollViewRef?.current?.scrollToEnd({ animated: true }) : () => { }}>
                                     <Pressable>{body}</Pressable>
                                 </ScrollView>
                             )}
