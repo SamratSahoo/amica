@@ -7,8 +7,9 @@ export class EndExecutionError extends Error {
 
 export interface TodoItem {
     id?: string;
-    name: string;
+    task: string;
     complete: boolean;
+    category: string;
 }
 
 export interface FirestoreDate {
@@ -24,6 +25,6 @@ export interface CalendarItem {
 export interface User {
     id?: string;
     email: string;
-    firebaseUid: string;
     categories: string[];
+    assistant_id: string;
 }

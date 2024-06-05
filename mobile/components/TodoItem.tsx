@@ -15,7 +15,7 @@ export default function TodoItemComponent({ item }: { item: TodoItem }) {
             await invertTodoItemCompletion(item.id ?? "")
             setItemsStatus(!itemStatus)
         }}>
-            <Text>{item.name}</Text>
+            <Text>{item.task}</Text>
             <Checkbox value={itemStatus}
             />
         </TouchableOpacity>
