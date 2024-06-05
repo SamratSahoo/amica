@@ -9,8 +9,8 @@ export default function DashboardFooter() {
         <View style={styles.container}>
             {FOOTER_TABS.map((tab, index) => {
                 return (
-                    <View>
-                        {tab && <TouchableOpacity style={styles.tabContainer} key={index} onPress={() => {
+                    <View key={index}>
+                        {tab && <TouchableOpacity style={styles.tabContainer} onPress={() => {
                             if (tab.callback && pathName !== tab.url) {
                                 tab.callback();
                             }

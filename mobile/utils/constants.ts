@@ -5,13 +5,13 @@ import { Foundation, MaterialIcons } from '@expo/vector-icons';
 import { auth } from './firebase';
 
 export const FOOTER_TABS = [{
-    label: 'dashboard', logoClass: MaterialIcons, logoName: 'dashboard',
+    label: 'home', logoClass: MaterialIcons, logoName: 'dashboard',
     url: "/dashboard",
     callback() {
         router.push('/dashboard')
     }
 }, {
-    label: 'todo list', logoClass: Entypo, logoName: 'list',
+    label: 'todo', logoClass: Entypo, logoName: 'list',
     url: "/list",
     callback() {
         router.push('/list')
@@ -21,6 +21,13 @@ export const FOOTER_TABS = [{
     url: "/calendar",
     callback() {
         router.push('/calendar')
+    }
+},
+{
+    label: 'ask', logoClass: Entypo, logoName: 'chat',
+    url: "/chat",
+    callback() {
+        router.push('/chat')
     }
 },
 {

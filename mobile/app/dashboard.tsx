@@ -90,7 +90,6 @@ export default function AudioScreen() {
                 {recording && <Fontisto name="mad" size={100} color={!recording ? "black" : 'red'} />}
                 <Text style={!recording ? styles.headerTitle : styles.headerTitleRed}>dashboard</Text>
             </View>
-            <Text></Text>
         </View>}
             body={<View style={styles.bodyContainer}>
                 <TouchableOpacity

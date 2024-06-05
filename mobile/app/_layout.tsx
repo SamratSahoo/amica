@@ -34,6 +34,7 @@ export default function RootLayout() {
         <Stack.Screen name="sign-up" />
         <Stack.Screen name="list" />
         <Stack.Screen name="dashboard" />
+        <Stack.Screen name="chat" />
       </Stack>
     </ThemeProvider>
   );
