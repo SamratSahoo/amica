@@ -21,7 +21,7 @@ export default function TodoItemComponent({ item }: { item: TodoItem }) {
 
             <View style={styles.checkCategoryContainer}>
                 <View style={styles.categoryContainer}>
-                    <Text style={styles.categoryText}>{item.category}</Text>
+                    <Text style={styles.categoryText}>{item.category.toLowerCase()}</Text>
                 </View>
                 <Checkbox value={itemStatus}
                 />

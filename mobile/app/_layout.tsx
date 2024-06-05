@@ -21,7 +21,8 @@ export default function RootLayout() {
     if (loaded) {
       SplashScreen.hideAsync();
     }
-    LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
+    // LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
+    LogBox.ignoreAllLogs();//
   }, [loaded]);
 
   if (!loaded) {

@@ -98,7 +98,7 @@ export default function AudioScreen() {
                     {currentUser?.categories.map((category, index) => {
                         return (
                             <View style={styles.roundPill} key={index}>
-                                <Text style={styles.categoryPill}>{category}</Text>
+                                <Text style={styles.categoryPill}>{category.toLowerCase()}</Text>
                             </View>
                         )
                     })}
